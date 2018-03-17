@@ -1,0 +1,7 @@
+<h1>Update Author: {{author.fname}} {{author.lname}}</h1>
+<form id="update-author" action="/books" method="post">
+    First Name <input type="text" name="fname" value="{{author.fname}}"><br>
+	Last Name <input type="text" name="lname" value="{{author.lname}}"><br>
+	Country of Origin <input type="text" name="origin" value="{{author.origin}}"><br>
+</form>
+<button onclick="updateAuthor({{author.id}})">Update</button>
