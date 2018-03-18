@@ -288,7 +288,7 @@ module.exports = function(){
         });
     });
 		
-	router.post('/addbookaward;, function(req, res){
+	router.post('/addbookaward';, function(req, res){
 	var mysql = req.app.get('mysql');
 	var sql = "INSERT INTO books_awards (bid, aid, award_year) VALUES (?, ?, ?)";
 	var inserts - [req.body.type];
