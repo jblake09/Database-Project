@@ -135,19 +135,18 @@
         </tr> 
         {{/each}} 
     </tbody> 
-    <form id="addbook" action="addbook" method="post">
-    Title: <input type="text" name="title"><br>
-    Author: <select name="author"> 
-        {{#each authors}}
-        <option value="{{id}}">{{fname}} {{lname}}</option>
+    <form id="addbookaward" action="addbookaward" method="post">
+    Book: <select name="book"> 
+        {{#each books}}
+        <option value="{{id}}">{{title}}</option>
         {{/each}}
 	</select><br>
-	Year Published: <input type="number" name="year_published"><br>
-    Genre: <select name="type"> 
-        {{#each genre}}
-        <option value="{{id}}">{{type}}</option>
+    Award: <select name="award"> 
+        {{#each awards}}
+        <option value="{{id}}">{{name}}</option>
         {{/each}}
-	</select>
+	</select><br>
+	Award Year: <input type="text" name="award_year"><br>
     <input type="submit" value="Submit">
     </form>
 </table> 

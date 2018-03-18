@@ -68,16 +68,6 @@ module.exports = function(){
         });
     }
 	
-	function getBooksAwards(res, mysql, context, complete){
-	mysql.pool.query("SELECT ba.id, b.title, a.fname, a.lname, b._year_published, g.type, aw.name FROM book b INNER JOIN author a ON b.author_id = a.id INNER JOIN genre g ON b.genre_id = g.id INNER JOIN books_awards ba ON b.id = ba.bid INNER JOIN award aw ON ba.aid = aw.id", function (error, results, fields){
-		if (error){
-			res.write(JSON.stringify(error));
-			res.end;
-		}
-		context.books_awards = results;
-		complete();
-	};
-    }
 		
 	function getbook(res, mysql, context, id, complete){
         var sql = "SELECT id, title, author_id, year_published, genre_id FROM book WHERE id = ?";
@@ -129,19 +119,6 @@ module.exports = function(){
             context.award = results[0];
             complete();
         });
-    }
-		
-	function getBookAward (res, mysql, context, id, complete){
-	var sql = "SELECT aid, bid, award_year FROM books_awards WHERE id = ?";
-	var inserts = [id];
-	mysql.pool.query(sql, inserts, function(error, results, fields){
-	    if(error){
-		res.write(JSON.stringify(error));
-		res.end();
-	    }
-	    context.books_awards = results[0];
-	    complete():
-	});
     }
 	
     function getPerson(res, mysql, context, id, complete){
@@ -299,20 +276,21 @@ module.exports = function(){
             }
         });
     });
-		
-	router.post('/addbookaward';, function(req, res){
-	var mysql = req.app.get('mysql');
-	var sql = "INSERT INTO books_awards (bid, aid, award_year) VALUES (?, ?, ?)";
-	var inserts - [req.body.type];
-	sql = mysql.pool.query(sql, inserts, function(error, results, fields){
-	    if(error){
-	        res.write(JSON.stringify(error));
-		res.end();
-	    }else{
-	        res.redirect('/books/book');
-	    }
-	});
+	
+	  router.post('/addbookaward', function(req, res){
+        var mysql = req.app.get('mysql');
+        var sql = "INSERT INTO books_awards (aid, bid, award_year) VALUES (?, ?, ?)";
+        var inserts = [req.body.award, req.body.book, req.body.award_year];
+        sql = mysql.pool.query(sql,inserts,function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.redirect('/books/book');
+            }
+        });
     });
+		
 
     /* The URI that update data is sent to in order to update a person */
 
@@ -423,6 +401,21 @@ module.exports = function(){
         })
     })
 	
+    router.delete('/deleteAward/:id', function(req, res){
+        var mysql = req.app.get('mysql');
+        var sql = "DELETE FROM award WHERE id = ?";
+        var inserts = [req.params.id];
+        sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.status(400);
+                res.end();
+            }else{
+                res.status(202).end();
+            }
+        })
+    })
+	
 	router.delete('/deleteGenre/:id', function(req, res){
         var mysql = req.app.get('mysql');
         var sql = "DELETE FROM genre WHERE id = ?";
@@ -439,20 +432,4 @@ module.exports = function(){
     })
     return router;
 }();
-	
-	router.delete('/deleteBookAward/:id', function(req,res){
-	var mysql = rep.app.get('mysql');
-	var sql = "DELETE FROM books_awards WHERE id = ?";
-	var inserts = [req.params.id];
-	sql = mysql.pool.query(sql, inserts, function (error, results, fields){
-	    if(error){
-		res.write(JSON.stringify(error));
-		res.status(400);
-		res.end();
-	    }else{
-		res.status(202).end();
-	    }
-	})
-    })
-    return router;
-}();
+
