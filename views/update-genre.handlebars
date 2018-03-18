@@ -1,18 +1,5 @@
-<h1>Update Book {{book.title}}:</h1>
-<form id="update-book" action="/books" method="post">
-    Title: <input type="text" name="title" value="{{book.title}}"><br>
-    Author: <select name="author" id="author-selector"> 
-        {{#each authors}}
-        <option value="{{id}}">{{fname}} {{lname}}</option>
-        {{/each}}
-	</select><br>
-    Year Published: <input type="number" name="year_published" value="{{book.year_published}}"><br>
-	Genre: <select name="type" id="genre-selector"> 
-        {{#each genre}}
-        <option value="{{id}}">{{type}}</option>
-        {{/each}}
-	</select>
+<h1>Update Genre {{book.title}}:</h1>
+<form id="update-genre" action="/books" method="post">
+    Genre Name: <input type="text" name="type" value="{{g.type}}"><br>
 </form>
-<button onclick="updateBook({{book.id}})">Update</button>
-<script defer>selectAuthor({{book.author_id}});</script>
-<script defer>selectGenre({{book.genre_id}});</script>
+<button onclick="updateGenre({{g.id}})">Update</button>

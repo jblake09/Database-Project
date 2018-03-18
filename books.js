@@ -69,6 +69,19 @@ module.exports = function(){
         });
     }
 	
+	function getG(res, mysql, context, id, complete){
+        var sql = "SELECT id, type FROM genre WHERE id = ?";
+        var inserts = [id];
+        mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }
+            context.g = results[0];
+            complete();
+        });
+    }
+	
 	function getAuthor(res, mysql, context, id, complete){
         var sql = "SELECT id, fname, lname, origin FROM author WHERE id = ?";
         var inserts = [id];
@@ -113,7 +126,7 @@ module.exports = function(){
     router.get('/book', function(req, res){
         var callbackCount = 0;
         var context = {};
-        context.jsscripts = ["deletebook.js", "deleteauthor.js", "deleteaward.js"];
+        context.jsscripts = ["deletebook.js", "deleteauthor.js", "deleteaward.js", "deletegenre.js"];
         var mysql = req.app.get('mysql');
         getBooks(res, mysql, context, complete);
         getAuthors(res, mysql, context, complete);
@@ -177,6 +190,21 @@ module.exports = function(){
         }
     });
 
+		router.get('/updateGenre/:id', function(req, res){
+        callbackCount = 0;
+        var context = {};
+        context.jsscripts = ["updategenre.js"];
+        var mysql = req.app.get('mysql');
+        getG(res, mysql, context, req.params.id, complete);
+        function complete(){
+            callbackCount++;
+            if(callbackCount >= 1){
+                res.render('update-genre', context);
+            }
+
+        }
+    });
+	
     /* Adds a person, redirects to the people page after adding */
 
     router.post('/addbook', function(req, res){
@@ -282,6 +310,21 @@ module.exports = function(){
             }
         });
     });
+	
+	router.put('/updateGenre/:id', function(req, res){
+        var mysql = req.app.get('mysql');
+        var sql = "UPDATE genre SET type=? WHERE id=?";
+        var inserts = [req.body.type, req.params.id];
+        sql = mysql.pool.query(sql,inserts,function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.status(200);
+                res.end();
+            }
+        });
+    });
     /* Route to delete a person, simply returns a 202 upon success. Ajax will handle this. */
 
     router.delete('/:id', function(req, res){
@@ -317,6 +360,21 @@ module.exports = function(){
 	 router.delete('/deleteAward/:id', function(req, res){
         var mysql = req.app.get('mysql');
         var sql = "DELETE FROM award WHERE id = ?";
+        var inserts = [req.params.id];
+        sql = mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.status(400);
+                res.end();
+            }else{
+                res.status(202).end();
+            }
+        })
+    })
+	
+	router.delete('/deleteGenre/:id', function(req, res){
+        var mysql = req.app.get('mysql');
+        var sql = "DELETE FROM genre WHERE id = ?";
         var inserts = [req.params.id];
         sql = mysql.pool.query(sql, inserts, function(error, results, fields){
             if(error){
