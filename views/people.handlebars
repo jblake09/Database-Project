@@ -69,7 +69,7 @@
     </form>
 </table>
 
-<h1>Genres</h1>
+<h1>Genres:</h1>
 <table>
 	<thead>
 		<th>Genre Name</th>
@@ -78,13 +78,13 @@
 		{{#each genre}}
 		<tr>
 			<td>{{type}}</td>
-			<td><button onclick="deleteAuthor({{id}})">Delete</button></td>
+			<td><button onclick="deleteGenre({{id}})">Delete</button></td>
             <td><a href="/books/updateAuthor/{{id}}">Update</a></td>
 		</tr>
 		{{/each}}
 	</tbody>
-	<form id="addgenre" action="addaward" method="post">
-    Genre Name: <input type="text" name="fname"><br>
+	<form id="addgenre" action="addgenre" method="post">
+    Genre Name: <input type="text" name="type"><br>
     <input type="submit" value="Submit">
     </form>
 </table>
