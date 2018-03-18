@@ -82,6 +82,19 @@ module.exports = function(){
         });
     }
 	
+	function getAward(res, mysql, context, id, complete){
+        var sql = "SELECT id, name FROM award WHERE id = ?";
+        var inserts = [id];
+        mysql.pool.query(sql, inserts, function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }
+            context.award = results[0];
+            complete();
+        });
+    }
+	
     function getPerson(res, mysql, context, id, complete){
         var sql = "SELECT id, fname, lname, homeworld, age FROM bsg_people WHERE id = ?";
         var inserts = [id];
@@ -144,6 +157,21 @@ module.exports = function(){
             callbackCount++;
             if(callbackCount >= 1){
                 res.render('update-author', context);
+            }
+
+        }
+    });
+	
+	router.get('/updateAward/:id', function(req, res){
+        callbackCount = 0;
+        var context = {};
+        context.jsscripts = ["updateaward.js"];
+        var mysql = req.app.get('mysql');
+        getAward(res, mysql, context, req.params.id, complete);
+        function complete(){
+            callbackCount++;
+            if(callbackCount >= 1){
+                res.render('update-award', context);
             }
 
         }
@@ -239,6 +267,21 @@ module.exports = function(){
         });
     });
 
+	
+	router.put('/updateAward/:id', function(req, res){
+        var mysql = req.app.get('mysql');
+        var sql = "UPDATE award SET name=? WHERE id=?";
+        var inserts = [req.body.name, req.params.id];
+        sql = mysql.pool.query(sql,inserts,function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.status(200);
+                res.end();
+            }
+        });
+    });
     /* Route to delete a person, simply returns a 202 upon success. Ajax will handle this. */
 
     router.delete('/:id', function(req, res){
