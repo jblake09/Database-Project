@@ -35,6 +35,17 @@ module.exports = function(){
         });
     }
 	
+	function getBook_Awards(res, mysql, context, complete){
+        mysql.pool.query("SELECT b.title, a.fname, a.lname, b.year_published, g.type, aw.name, ba.award_year FROM book b INNER JOIN author a ON b.author_id=a.id INNER JOIN genre g ON b.genre_id=g.id INNER JOIN books_awards ba ON b.id = ba.bid INNER JOIN award aw ON ba.aid=aw.id;", function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }
+            context.bookawards  = results;
+            complete();
+        });
+    }
+	
 	function getGenre(res, mysql, context, complete){
         mysql.pool.query("SELECT id, type FROM genre", function(error, results, fields){
             if(error){
@@ -132,9 +143,10 @@ module.exports = function(){
         getAuthors(res, mysql, context, complete);
 		getGenre(res, mysql, context, complete);
 		getAwards(res, mysql, context, complete);
+		getBook_Awards(res, mysql, context, complete);
         function complete(){
             callbackCount++;
-            if(callbackCount >= 4){
+            if(callbackCount >= 5){
                 res.render('people', context);
             }
 

@@ -109,3 +109,45 @@
     </form>
 </table>
 
+<h1>Award Winning Books</h1>
+<table>
+    <thead> 
+        <th>Title</th> 
+        <th>Author First Name</th> 
+		<th>Author Last Name</th>
+        <th>Year Published</th> 
+		<th>Genre</th>
+		<th>Award Name</th>
+		<th>Award Year</th>
+    </thead> 
+    <tbody> 
+        {{#each bookawards}} 
+        <tr> 
+            <td>{{title}}</td> 
+            <td>{{fname}}</td> 
+            <td>{{lname}}</td> 
+            <td>{{year_published}}</td>
+			<td>{{type}}</td>
+			<td>{{name}}</td>
+			<td>{{award_year}}</td>
+            <td><button onclick="deleteBook({{id}})">Delete</button></td>
+            <td><a href="/books/{{id}}">Update</a></td>
+        </tr> 
+        {{/each}} 
+    </tbody> 
+    <form id="addbook" action="addbook" method="post">
+    Title: <input type="text" name="title"><br>
+    Author: <select name="author"> 
+        {{#each authors}}
+        <option value="{{id}}">{{fname}} {{lname}}</option>
+        {{/each}}
+	</select><br>
+	Year Published: <input type="number" name="year_published"><br>
+    Genre: <select name="type"> 
+        {{#each genre}}
+        <option value="{{id}}">{{type}}</option>
+        {{/each}}
+	</select>
+    <input type="submit" value="Submit">
+    </form>
+</table> 
