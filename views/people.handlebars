@@ -69,3 +69,23 @@
     </form>
 </table>
 
+<h1>Current Awards:</h1>
+<table>
+    <thead> 
+        <th>Award Name</th>  
+    </thead> 
+    <tbody> 
+        {{#each awards}} 
+        <tr> 
+            <td>{{name}}</td> 
+            <td><button onclick="deleteAuthor({{id}})">Delete</button></td>
+            <td><a href="/books/updateAuthor/{{id}}">Update</a></td>
+        </tr> 
+        {{/each}} 
+    </tbody> 
+    <form id="addauthor" action="addaward" method="post">
+    Award Name: <input type="text" name="fname"><br>
+    <input type="submit" value="Submit">
+    </form>
+</table>
+

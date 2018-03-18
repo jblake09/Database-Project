@@ -23,6 +23,18 @@ module.exports = function(){
             complete();
         });
     }
+	
+	function getAwards(res, mysql, context, complete){
+        mysql.pool.query("SELECT id, name FROM award", function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }
+            context.awards  = results;
+            complete();
+        });
+    }
+	
 	function getGenre(res, mysql, context, complete){
         mysql.pool.query("SELECT id, type FROM genre", function(error, results, fields){
             if(error){
@@ -93,9 +105,10 @@ module.exports = function(){
         getBooks(res, mysql, context, complete);
         getAuthors(res, mysql, context, complete);
 		getGenre(res, mysql, context, complete);
+		getAwards(res, mysql, context, complete);
         function complete(){
             callbackCount++;
-            if(callbackCount >= 3){
+            if(callbackCount >= 4){
                 res.render('people', context);
             }
 
@@ -155,6 +168,20 @@ module.exports = function(){
    router.post('/addauthor', function(req, res){
         var mysql = req.app.get('mysql');
         var sql = "INSERT INTO author (fname, lname, origin) VALUES (?,?,?)";
+        var inserts = [req.body.fname, req.body.lname, req.body.origin];
+        sql = mysql.pool.query(sql,inserts,function(error, results, fields){
+            if(error){
+                res.write(JSON.stringify(error));
+                res.end();
+            }else{
+                res.redirect('/books/book');
+            }
+        });
+    });
+	
+	router.post('/addaward', function(req, res){
+        var mysql = req.app.get('mysql');
+        var sql = "INSERT INTO award (name) VALUES (?)";
         var inserts = [req.body.fname, req.body.lname, req.body.origin];
         sql = mysql.pool.query(sql,inserts,function(error, results, fields){
             if(error){
