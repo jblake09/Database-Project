@@ -430,7 +430,7 @@ module.exports = function(){
 	
 	router.delete('/deleteBookAward/:id', function(req,res){
 	var mysql = rep.app.get('mysql');
-	var sql = "DELETE FROM books_awards WHERE id";
+	var sql = "DELETE FROM books_awards WHERE id = ?";
 	var inserts = [req.params.id];
 	sql = mysql.pool.query(sql, inserts, function (error, results, fields){
 	    if(error){
