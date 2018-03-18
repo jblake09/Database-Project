@@ -69,6 +69,26 @@
     </form>
 </table>
 
+<h1>Genres</h1>
+<table>
+	<thead>
+		<th>Genre Name</th>
+	</thead>
+	<tbody>
+		{{#each genre}}
+		<tr>
+			<td>{{type}}</td>
+			<td><button onclick="deleteAuthor({{id}})">Delete</button></td>
+            <td><a href="/books/updateAuthor/{{id}}">Update</a></td>
+		</tr>
+		{{/each}}
+	</tbody>
+	<form id="addgenre" action="addaward" method="post">
+    Genre Name: <input type="text" name="fname"><br>
+    <input type="submit" value="Submit">
+    </form>
+</table>
+
 <h1>Current Awards:</h1>
 <table>
     <thead> 
