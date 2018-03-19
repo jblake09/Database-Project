@@ -36,7 +36,7 @@ module.exports = function(){
     }
 	
 	function getBook_Awards(res, mysql, context, complete){
-        mysql.pool.query("SELECT b.title, a.fname, a.lname, b.year_published, g.type, aw.name, ba.award_year FROM book b INNER JOIN author a ON b.author_id=a.id INNER JOIN genre g ON b.genre_id=g.id INNER JOIN books_awards ba ON b.id = ba.bid INNER JOIN award aw ON ba.aid=aw.id;", function(error, results, fields){
+        mysql.pool.query("SELECT b.title, a.fname, a.lname, b.year_published, g.type, aw.name, ba.aid, ba.bid, ba.award_year FROM book b INNER JOIN author a ON b.author_id=a.id INNER JOIN genre g ON b.genre_id=g.id INNER JOIN books_awards ba ON b.id = ba.bid INNER JOIN award aw ON ba.aid=aw.id;", function(error, results, fields){
             if(error){
                 res.write(JSON.stringify(error));
                 res.end();
@@ -139,7 +139,7 @@ module.exports = function(){
     router.get('/book', function(req, res){
         var callbackCount = 0;
         var context = {};
-        context.jsscripts = ["deletebook.js", "deleteauthor.js", "deleteaward.js", "deletegenre.js"];
+        context.jsscripts = ["deletebook.js", "deleteauthor.js", "deleteaward.js", "deletegenre.js", "deletebookawards.js"];
         var mysql = req.app.get('mysql');
         getBooks(res, mysql, context, complete);
         getAuthors(res, mysql, context, complete);
@@ -374,7 +374,7 @@ module.exports = function(){
 	 router.delete('/deleteAuthor/:id', function(req, res){
         var mysql = req.app.get('mysql');
         var sql = "DELETE FROM author WHERE id = ?";
-        var inserts = [req.params.id];
+        var inserts = [req.params.aid];
         sql = mysql.pool.query(sql, inserts, function(error, results, fields){
             if(error){
                 res.write(JSON.stringify(error));
@@ -401,15 +401,18 @@ module.exports = function(){
         })
     })
 	
-    router.delete('/deleteAward/:id', function(req, res){
+	 router.delete('/deleteAwardBook/aid/:aid/bid/:bid', function(req, res){
+        //console.log(req) //I used this to figure out where did pid and cid go in the request
+        console.log(req.params.aid)
+        console.log(req.params.bid)
         var mysql = req.app.get('mysql');
-        var sql = "DELETE FROM award WHERE id = ?";
-        var inserts = [req.params.id];
+        var sql = "DELETE FROM books_awards WHERE aid = ? AND bid = ?";
+        var inserts = [req.params.aid, req.params.bid];
         sql = mysql.pool.query(sql, inserts, function(error, results, fields){
             if(error){
                 res.write(JSON.stringify(error));
-                res.status(400);
-                res.end();
+                res.status(400); 
+                res.end(); 
             }else{
                 res.status(202).end();
             }
